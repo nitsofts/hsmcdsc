@@ -22,12 +22,17 @@ def scrape_cdsc_data():
     # Extract all the "h4" elements from the "fun-custom-column" div
     h4_elements = div.find_all("h4")
 
-    # Create a list to store the extracted data with swapped positions
+    # Create a list to store the extracted data in the new format
     data = []
 
-    # Swap the positions of the "h4" elements and add them to the list
+    # Format and add the data to the list
     for i in range(0, len(h4_elements), 2):
-        data.append({h4_elements[i + 1].text.strip(): h4_elements[i].text.strip()})
+        item = {
+            "id": str(int(i/2)),  # ID as a string
+            "dataKey": h4_elements[i + 1].text.strip(),
+            "dataValue": h4_elements[i].text.strip()
+        }
+        data.append(item)
 
     return data
 
@@ -39,5 +44,5 @@ def get_cdsc_data():
     # Return the scraped data in JSON format
     return jsonify(cdsc_data)
 
-if __name__ == '__main':
+if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

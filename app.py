@@ -25,15 +25,23 @@ def scrape_cdsc_data():
     # Create a list to store the extracted data in the new format
     data = []
 
+    # Define important positions
+    important_positions = [8, 10, 11, 12, 13]
+
     # Format and add the data to the list
     for i in range(0, len(h4_elements), 2):
+        imp_value = "true" if int(i/2) in important_positions else "false"
         item = {
             "id": str(int(i/2)),  # ID as a string
             "dataKey": h4_elements[i + 1].text.strip(),
-            "dataValue": h4_elements[i].text.strip()
+            "dataValue": h4_elements[i].text.strip(),
+            "imp": imp_value
         }
         data.append(item)
 
+    # Sort the data so that items with "imp": "true" are at the top
+    data.sort(key=lambda x: x['imp'], reverse=True)
+    
     return data
 
 @app.route('/get_cdsc_data', methods=['GET'])
